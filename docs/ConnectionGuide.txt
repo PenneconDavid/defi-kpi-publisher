@@ -1,0 +1,72 @@
+KPI Pulse - Connection Guide
+Purpose: Inventory every declared port, API endpoint, RPC, event trigger, and external connection used by this project.
+Last Updated Phase: Step 1 scaffolding
+
+----------------------------------------------------------------
+1) External HTTP Endpoints
+----------------------------------------------------------------
+- Name: DefiLlama Protocol Endpoint (MVP source)
+  URL Pattern: https://api.llama.fi/protocol/{protocolSlug}
+  Method: GET
+  Auth: None (public endpoint)
+  Used By: workflows/src/clients/http.ts
+  Data Purpose: TVL and change metrics ingestion
+  Failure Handling: Retry/backoff, schema validation, no-write on invalid payload
+
+----------------------------------------------------------------
+2) CRE Runtime and Capability Connections
+----------------------------------------------------------------
+- Name: CRE Workflow Runtime
+  Connection Type: Local simulation and/or deployed CRE execution
+  Used By: workflows/workflow.ts and handler modules
+  Notes: Trigger-and-callback model with capability calls
+
+- Name: EVM Read Capability
+  Connection Type: CRE capability -> target chain RPC (indirect)
+  Used By: workflows/src/clients/evm.ts
+  Purpose: Read prior KPI snapshot and policy state
+
+- Name: EVM Write Capability
+  Connection Type: CRE capability -> target chain transaction submission (indirect)
+  Used By: workflows/src/clients/evm.ts
+  Purpose: Publish KPI snapshot and apply policy changes
+
+----------------------------------------------------------------
+3) Blockchain / RPC Connections
+----------------------------------------------------------------
+- Name: Tenderly Virtual TestNet RPC
+  URL: Set via environment variable in Step 2 (not hardcoded in Step 1)
+  Chain Role: Primary MVP deployment and demo chain
+  Used By: deployment scripts, CRE EVM capabilities
+
+- Name: Optional Sepolia RPC (non-MVP fallback)
+  URL: Set via environment variable in Step 2
+  Chain Role: Optional validation environment
+  Used By: optional dual-env testing scripts
+
+----------------------------------------------------------------
+4) Onchain Event Trigger Connections
+----------------------------------------------------------------
+- Name: requestUpdate Event Subscription
+  Origin Contract: StrategyController (planned interface path)
+  Trigger Type: CRE EVM log trigger
+  Used By: workflows/src/handlers/reactiveLog.ts
+  Purpose: Reactive execution path initiated by onchain signal
+
+----------------------------------------------------------------
+5) Local Service Ports (Planned)
+----------------------------------------------------------------
+- Name: Local app/docs preview
+  Port: 3000 (reserved, optional)
+  Purpose: Optional local UI/read-only status page (stretch)
+
+- Name: Local test RPC (if using anvil/hardhat in local tests)
+  Port: 8545 (reserved for local chain testing)
+  Purpose: Local-only development and tests
+
+----------------------------------------------------------------
+6) Submission Evidence Links (To Populate)
+----------------------------------------------------------------
+- Tenderly Explorer Link: TODO in final submission pass
+- Demo Video Link: TODO in final submission pass
+- Public Repo Link: TODO in final submission pass

@@ -1,0 +1,15 @@
+{
+  "name": "kpi-pulse",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "echo \"Step 2: add environment checks and dependency install guidance\"",
+    "simulate:cron": "echo \"Step 2: wire CRE cron simulation\"",
+    "simulate:reactive": "echo \"Step 2: wire CRE reactive simulation\"",
+    "deploy:vtn": "echo \"Step 2: deploy contracts/workflows to Tenderly VTN\"",
+    "demo": "echo \"Step 2: run deterministic demo scenario\""
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
