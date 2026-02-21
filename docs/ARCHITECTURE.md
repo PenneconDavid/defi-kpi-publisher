@@ -2,12 +2,13 @@
 
 ## Components
 
-- `workflows/` CRE TypeScript package with two triggers and shared callback logic.
+- `workflows/` CRE-style TypeScript package with two triggers and shared callback logic (`executeKpiCycle`).
 - `contracts/KpiOracle.sol` onchain KPI snapshot registry.
 - `contracts/PolicyManager.sol` policy config and threshold evaluation helpers.
 - `contracts/StrategyController.sol` risk mode state machine and policy application.
 - Public KPI endpoint adapter (DefiLlama for MVP).
 - Tenderly Virtual TestNet for deployment, tx inspection, and demo evidence.
+- Foundry build pipeline (`forge`) with TypeScript deployment and workflow runners.
 
 ## Data Flow
 
@@ -46,5 +47,5 @@ flowchart TD
 
 ## Security and Scope Notes
 
-- Step 1 provides skeleton interfaces and architecture only.
-- Full threat model and implementation hardening is part of Step 2+.
+- Current implementation is MVP-oriented and focuses on deterministic demo reliability.
+- Full threat model and production hardening is planned for post-MVP iterations.

@@ -1,20 +1,30 @@
-/**
- * Step 1 scaffold:
- * Registers the two intended CRE trigger paths.
- * Full CRE SDK implementation is added in Step 2.
- */
+import {defaultConfig} from "./src/config.js";
+import {handleProactiveCron} from "./src/handlers/proactiveCron.js";
+import {handleReactiveLog} from "./src/handlers/reactiveLog.js";
 
-export const workflowPlan = {
+/**
+ * CRE-oriented workflow manifest.
+ * Step 2 wires executable callback handlers and keeps trigger metadata
+ * aligned with CRE trigger-and-callback architecture.
+ */
+export const workflowManifest = {
   handlers: [
     {
       name: "proactiveCronWorkflow",
       trigger: "cron",
-      callback: "executeKpiCycle"
+      schedule: defaultConfig.cronSchedule,
+      callback: "handleProactiveCron"
     },
     {
       name: "reactiveLogWorkflow",
       trigger: "evm.log",
-      callback: "executeKpiCycle"
+      event: "UpdateRequested(bytes32,address,string)",
+      callback: "handleReactiveLog"
     }
   ]
+};
+
+export const callbacks = {
+  handleProactiveCron,
+  handleReactiveLog
 };

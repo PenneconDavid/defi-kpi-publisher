@@ -1,6 +1,6 @@
 KPI Pulse - Connection Guide
 Purpose: Inventory every declared port, API endpoint, RPC, event trigger, and external connection used by this project.
-Last Updated Phase: Step 1 scaffolding
+Last Updated Phase: Step 2 implementation
 
 ----------------------------------------------------------------
 1) External HTTP Endpoints
@@ -35,12 +35,12 @@ Last Updated Phase: Step 1 scaffolding
 3) Blockchain / RPC Connections
 ----------------------------------------------------------------
 - Name: Tenderly Virtual TestNet RPC
-  URL: Set via environment variable in Step 2 (not hardcoded in Step 1)
+  URL: Set via `TENDERLY_VTN_RPC_URL` (or `WORKFLOW_RPC_URL`)
   Chain Role: Primary MVP deployment and demo chain
-  Used By: deployment scripts, CRE EVM capabilities
+  Used By: TypeScript deployment scripts, workflow EVM client
 
 - Name: Optional Sepolia RPC (non-MVP fallback)
-  URL: Set via environment variable in Step 2
+  URL: Set via `SEPOLIA_RPC_URL`
   Chain Role: Optional validation environment
   Used By: optional dual-env testing scripts
 
@@ -60,9 +60,13 @@ Last Updated Phase: Step 1 scaffolding
   Port: 3000 (reserved, optional)
   Purpose: Optional local UI/read-only status page (stretch)
 
-- Name: Local test RPC (if using anvil/hardhat in local tests)
+- Name: Local test RPC (if using local chain tests)
   Port: 8545 (reserved for local chain testing)
   Purpose: Local-only development and tests
+
+- Name: Foundry local Anvil RPC (optional)
+  Port: 8545 (reserved for local chain testing)
+  Purpose: Local fork/test execution if local testnet is used
 
 ----------------------------------------------------------------
 6) Submission Evidence Links (To Populate)

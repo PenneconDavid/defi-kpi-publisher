@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo \"Step 2: implement CRE workflow build\"",
-    "simulate:cron": "echo \"Step 2: implement CRE cron simulation\"",
-    "simulate:reactive": "echo \"Step 2: implement CRE reactive simulation\""
+    "build": "tsc -p tsconfig.json",
+    "simulate:cron": "ts-node ../scripts/simulate-cron.ts",
+    "simulate:reactive": "ts-node ../scripts/simulate-reactive.ts"
   },
   "engines": {
     "node": ">=20"

@@ -1,40 +1,12 @@
-import {fetchProtocolKpi, normalizeKpi} from "../clients/http.js";
-import {applyPolicy, publishSnapshot, readPriorSnapshot} from "../clients/evm.js";
-import {evaluatePolicy} from "../logic/evaluatePolicy.js";
-import {defaultConfig} from "../config.js";
+import {executeKpiCycle, type KpiCycleResult} from "../executeKpiCycle.js";
 
-export async function handleReactiveLog(_event: {protocolId: string; reason: string}): Promise<void> {
-  const raw = await fetchProtocolKpi(defaultConfig.defiLlamaProtocolSlug);
-  const kpi = normalizeKpi(raw);
-
-  await readPriorSnapshot(defaultConfig.protocolId);
-
-  await publishSnapshot({
-    protocolId: defaultConfig.protocolId,
-    tvlUsd: kpi.tvlUsd,
-    change1dBps: kpi.change1dBps,
-    change7dBps: kpi.change7dBps,
-    runId: "reactive-placeholder-run-id"
+export async function handleReactiveLog(event: {
+  protocolId: string;
+  reason: string;
+}): Promise<KpiCycleResult> {
+  return executeKpiCycle({
+    trigger: "log",
+    protocolIdOverride: event.protocolId,
+    runIdPrefix: "reactive"
   });
-
-  const outcome = evaluatePolicy(
-    {
-      tvlUsd: kpi.tvlUsd,
-      change1dBps: kpi.change1dBps,
-      change7dBps: kpi.change7dBps
-    },
-    {
-      minTvlUsd: 1,
-      minChange1dBps: -500,
-      minChange7dBps: -1200
-    }
-  );
-
-  if (outcome.breach) {
-    await applyPolicy({
-      protocolId: defaultConfig.protocolId,
-      nextMode: outcome.nextMode,
-      reasonCode: outcome.reasonCode
-    });
-  }
 }

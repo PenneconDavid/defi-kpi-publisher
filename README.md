@@ -11,16 +11,15 @@ CRE-driven DeFi KPI oracle that ingests public SaaS KPIs and automatically toggl
   - Secondary: DeFi & Tokenization
   - Bonus challenge: Tenderly Virtual TestNets
 
-## What Step 1 Includes
+## Current Implementation Status
 
-This repository currently contains Step 1 artifacts only:
+Step 2 baseline is implemented:
 
-- Judge-friendly repository scaffolding
-- PRD v1 and architecture docs
-- Demo runbook and requirement-to-proof mapping
-- Smart contract, workflow, and script skeleton files (no full business logic yet)
-
-No production implementation claims are made at this stage.
+- Foundry build flow + TypeScript deployment flow for `KpiOracle`, `PolicyManager`, `StrategyController`
+- TypeScript workflow callbacks for proactive cron and reactive log paths
+- DefiLlama KPI fetch + normalization
+- Onchain publish and conditional policy application from workflow logic
+- Demo scripts for deployment, policy seeding, update request, and end-to-end scenario output
 
 ## Architecture at a Glance
 
@@ -42,28 +41,47 @@ Core contracts:
 - `contracts/PolicyManager.sol`
 - `contracts/StrategyController.sol`
 
+## Quickstart
+
+1. Install dependencies:
+   - `npm install`
+2. Prepare env:
+   - Copy `.env.example` to `.env`
+   - Fill at minimum: `TENDERLY_VTN_RPC_URL`, `PRIVATE_KEY`
+3. Compile:
+   - `npm run build`
+4. Deploy contracts:
+   - `npm run deploy:vtn`
+5. Seed policy and requester:
+   - `npm run seed:policy`
+6. Run workflow simulations:
+   - `npm run simulate:cron`
+   - `npm run simulate:reactive`
+7. Run deterministic demo:
+   - `npm run demo`
+
+## Commands
+
+- `npm run setup` - print setup reminder and required env
+- `npm run build` - compile contracts with Foundry (`forge build`)
+- `npm run deploy:vtn` - deploy contracts to Tenderly Virtual TestNet
+- `npm run seed:policy` - configure thresholds + allow update requester
+- `npm run emit:request` - emit `requestUpdate(...)` event
+- `npm run simulate:cron` - run proactive workflow path
+- `npm run simulate:reactive` - run reactive workflow path
+- `npm run demo` - execute full deterministic demo sequence
+
 ## Repository Map
 
 - `docs/PRD.md` - product requirements and MVP boundaries
 - `docs/ARCHITECTURE.md` - components, trust boundaries, failure handling
 - `docs/DEMO_RUNBOOK.md` - five-minute demo sequence
 - `docs/JUDGING_MAP.md` - submission requirement-to-artifact map
-- `docs/ConnectionGuide.txt` - all ports, endpoints, and connections
-- `contracts/` - contract skeletons and shared interfaces
-- `workflows/` - CRE TypeScript workflow skeletons
-- `scripts/` - deployment/demo script skeletons
-- `test/` - contract/workflow test placeholders
-- `.github/workflows/ci.yml` - CI scaffold
-
-## Planned Commands (Scaffolded)
-
-These command names are reserved for Step 2 implementation:
-
-- `npm run setup`
-- `npm run simulate:cron`
-- `npm run simulate:reactive`
-- `npm run deploy:vtn`
-- `npm run demo`
+- `docs/ConnectionGuide.txt` - ports, endpoints, and integration inventory
+- `contracts/` - Solidity contracts for KPI state, policy config, strategy mode
+- `workflows/` - TypeScript workflow package and handlers
+- `scripts/` - deployment and demo execution scripts
+- `.github/workflows/ci.yml` - compile check in CI
 
 ## Submission Evidence Plan
 

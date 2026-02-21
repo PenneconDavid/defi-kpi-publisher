@@ -6,21 +6,23 @@ Demonstrate CRE workflow execution that ingests KPI data and drives onchain risk
 
 ## Prerequisites
 
-- Deployed contract addresses available.
-- Workflow package configured for target chain.
-- Tenderly Virtual TestNet Explorer open.
+- `.env` configured from `.env.example`.
+- `npm install` and `npm run build` completed.
+- Tenderly Virtual TestNet Explorer open for the target network.
 
 ## Live Sequence
 
 1. Show repository structure and `docs/JUDGING_MAP.md`.
-2. Run `npm run deploy:vtn` and display deployment outputs.
-3. Open Tenderly Explorer and verify all core contracts are deployed.
-4. Run `npm run simulate:cron` (or trigger one deployed cron run).
-5. Show `KpiPublished` event + corresponding publish tx.
-6. Run `npm run emit-request-update`.
-7. Show `UpdateRequested` event and subsequent reactive workflow tx.
-8. Show conditional `PolicyApplied` event and mode transition tx.
-9. Close with requirement-to-proof mapping and explorer links.
+2. Run `npm run deploy:vtn` and display addresses + deploy tx outputs.
+3. Run `npm run seed:policy` to configure thresholds and requester allowlist.
+4. Open Tenderly Explorer and verify the three deployed contracts.
+5. Run `npm run simulate:cron`.
+6. Show `KpiPublished` event + publish tx hash from script output.
+7. Run `npm run emit:request`.
+8. Run `npm run simulate:reactive`.
+9. Show `UpdateRequested` + follow-up publish/apply tx hashes in Explorer.
+10. Optionally run `npm run demo` for a single-command end-to-end proof output.
+11. Close with `docs/JUDGING_MAP.md` requirement mapping.
 
 ## Expected Artifacts
 
