@@ -20,6 +20,7 @@ Step 2 baseline is implemented:
 - DefiLlama KPI fetch + normalization
 - Onchain publish and conditional policy application from workflow logic
 - Demo scripts for deployment, policy seeding, update request, and end-to-end scenario output
+- Foundry unit tests (35 Solidity tests) and TypeScript logic tests (15 tests)
 
 ## Architecture at a Glance
 
@@ -70,6 +71,9 @@ Core contracts:
 - `npm run simulate:cron` - run proactive workflow path
 - `npm run simulate:reactive` - run reactive workflow path
 - `npm run demo` - execute full deterministic demo sequence
+- `npm test` - run all tests (Solidity + TypeScript)
+- `npm run test:contracts` - Foundry Solidity tests only
+- `npm run test:workflows` - TypeScript workflow logic tests only
 
 ## Repository Map
 
@@ -81,7 +85,9 @@ Core contracts:
 - `contracts/` - Solidity contracts for KPI state, policy config, strategy mode
 - `workflows/` - TypeScript workflow package and handlers
 - `scripts/` - deployment and demo execution scripts
-- `.github/workflows/ci.yml` - compile check in CI
+- `test/contracts/` - Foundry unit and integration tests
+- `test/workflows/` - TypeScript logic tests (evaluatePolicy, normalizeKpi)
+- `.github/workflows/ci.yml` - build, type-check, and test in CI
 
 ## Submission Evidence Plan
 

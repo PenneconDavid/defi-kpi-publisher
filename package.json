@@ -10,7 +10,10 @@
     "deploy:vtn": "ts-node-esm scripts/deploy-contracts.ts",
     "seed:policy": "ts-node-esm scripts/seed-policy.ts",
     "emit:request": "ts-node-esm scripts/emit-request-update.ts",
-    "demo": "ts-node-esm scripts/demo-scenario.ts"
+    "demo": "ts-node-esm scripts/demo-scenario.ts",
+    "test": "forge test -vv && node --import tsx --test test/workflows/evaluatePolicy.test.ts test/workflows/normalizeKpi.test.ts",
+    "test:contracts": "forge test -vv",
+    "test:workflows": "node --import tsx --test test/workflows/evaluatePolicy.test.ts test/workflows/normalizeKpi.test.ts"
   },
   "engines": {
     "node": ">=20"
@@ -19,6 +22,7 @@
     "@types/node": "^25.3.0",
     "dotenv": "^17.3.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {

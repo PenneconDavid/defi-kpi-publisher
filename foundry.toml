@@ -1,6 +1,7 @@
 [profile.default]
 src = "contracts"
 out = "out"
+test = "test/contracts"
 libs = ["lib"]
 solc_version = "0.8.24"
 optimizer = true
