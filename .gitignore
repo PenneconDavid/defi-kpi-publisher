@@ -37,3 +37,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# CRE workflow build artifacts
+cre-workflow/dist/
+cre-workflow/node_modules/
+cre-workflow/.cre/
+cre-workflow/bun.lock
+
+# deployment artifacts (generated, not committed)
+deployments/latest.json

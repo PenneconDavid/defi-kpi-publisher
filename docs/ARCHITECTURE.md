@@ -2,28 +2,32 @@
 
 ## Components
 
-- `workflows/` CRE-style TypeScript package with two triggers and shared callback logic (`executeKpiCycle`).
+- `cre-workflow/` CRE SDK-native TypeScript workflow using `@chainlink/cre-sdk` triggers, capabilities, and consensus-backed execution.
+  - `main.ts` registers two `cre.handler()` entries: CronCapability trigger + EVMClient.logTrigger.
+  - `cronCallback.ts` + `logCallback.ts` delegate to shared `kpiCycle.ts` (`executeKpiCycle`).
+  - `kpiCycle.ts` orchestrates: HTTPClient fetch -> EVMClient.callContract read -> runtime.report() + EVMClient.writeReport for publish -> conditional applyPolicy write.
+- `workflows/` ethers-based TypeScript execution path for local demo scripts.
 - `contracts/KpiOracle.sol` onchain KPI snapshot registry.
 - `contracts/PolicyManager.sol` policy config and threshold evaluation helpers.
 - `contracts/StrategyController.sol` risk mode state machine and policy application.
 - Public KPI endpoint adapter (DefiLlama for MVP).
 - Tenderly Virtual TestNet for deployment, tx inspection, and demo evidence.
-- Foundry build pipeline (`forge`) with TypeScript deployment and workflow runners.
+- Foundry build pipeline (`forge`) with TypeScript deployment scripts.
 
 ## Data Flow
 
 ```mermaid
 flowchart TD
-  cronTrigger[cronTrigger] --> executeKpiCycle
-  logTrigger[logTrigger_requestUpdate] --> executeKpiCycle
-  executeKpiCycle --> httpFetchDefiLlama
-  httpFetchDefiLlama --> normalizeKpis
-  normalizeKpis --> evmReadPriorSnapshot
-  evmReadPriorSnapshot --> evmWritePublish
-  evmWritePublish --> policyEval
-  policyEval -->|thresholdBreach| evmWriteApplyPolicy
-  policyEval -->|noBreach| completeRun
-  evmWriteApplyPolicy --> completeRun
+  cronTrigger["CronCapability.trigger()"] --> executeKpiCycle
+  logTrigger["EVMClient.logTrigger(UpdateRequested)"] --> executeKpiCycle
+  executeKpiCycle --> httpFetch["HTTPClient.sendRequest(DefiLlama)"]
+  httpFetch --> normalize["Normalize KPI to bps"]
+  normalize --> evmRead["EVMClient.callContract(latestSnapshot)"]
+  evmRead --> report1["runtime.report() + writeReport(publish)"]
+  report1 --> policyEval["evaluatePolicy()"]
+  policyEval -->|thresholdBreach| report2["runtime.report() + writeReport(applyPolicy)"]
+  policyEval -->|noBreach| completeRun["Return ok"]
+  report2 --> completeRun
 ```
 
 ## Trust Boundaries

@@ -1,6 +1,6 @@
 KPI Pulse - Connection Guide
 Purpose: Inventory every declared port, API endpoint, RPC, event trigger, and external connection used by this project.
-Last Updated Phase: Step 2 implementation
+Last Updated Phase: Step 3A CRE SDK wiring
 
 ----------------------------------------------------------------
 1) External HTTP Endpoints
@@ -9,27 +9,47 @@ Last Updated Phase: Step 2 implementation
   URL Pattern: https://api.llama.fi/protocol/{protocolSlug}
   Method: GET
   Auth: None (public endpoint)
-  Used By: workflows/src/clients/http.ts
+  Used By: cre-workflow/kpiCycle.ts (CRE HTTPClient), workflows/src/clients/http.ts (local scripts)
   Data Purpose: TVL and change metrics ingestion
   Failure Handling: Retry/backoff, schema validation, no-write on invalid payload
 
 ----------------------------------------------------------------
 2) CRE Runtime and Capability Connections
 ----------------------------------------------------------------
-- Name: CRE Workflow Runtime
-  Connection Type: Local simulation and/or deployed CRE execution
-  Used By: workflows/workflow.ts and handler modules
-  Notes: Trigger-and-callback model with capability calls
+- Name: CRE Workflow Runtime (SDK-native)
+  Connection Type: CRE CLI simulation and/or deployed DON execution
+  Used By: cre-workflow/main.ts (cre.handler, Runner)
+  Notes: Trigger-and-callback model via @chainlink/cre-sdk
 
-- Name: EVM Read Capability
+- Name: CRE CronCapability
+  Connection Type: CRE internal trigger
+  Used By: cre-workflow/main.ts
+  Purpose: Scheduled proactive KPI fetch cycle
+
+- Name: CRE EVMClient.logTrigger
+  Connection Type: CRE capability -> on-chain event subscription
+  Used By: cre-workflow/main.ts
+  Purpose: Reactive trigger on UpdateRequested event
+
+- Name: CRE HTTPClient
+  Connection Type: CRE capability -> external HTTP with consensus
+  Used By: cre-workflow/kpiCycle.ts
+  Purpose: Fetch DefiLlama KPI data with multi-node consensus
+
+- Name: CRE EVMClient.callContract (read)
   Connection Type: CRE capability -> target chain RPC (indirect)
-  Used By: workflows/src/clients/evm.ts
-  Purpose: Read prior KPI snapshot and policy state
+  Used By: cre-workflow/kpiCycle.ts
+  Purpose: Read prior KPI snapshot from KpiOracle
 
-- Name: EVM Write Capability
-  Connection Type: CRE capability -> target chain transaction submission (indirect)
-  Used By: workflows/src/clients/evm.ts
-  Purpose: Publish KPI snapshot and apply policy changes
+- Name: CRE EVMClient.writeReport (write)
+  Connection Type: CRE capability -> DON consensus -> CRE forwarder -> target contract
+  Used By: cre-workflow/kpiCycle.ts
+  Purpose: Publish KPI snapshot and apply policy via signed reports
+
+- Name: EVM Read/Write (local scripts)
+  Connection Type: Direct ethers.js RPC calls
+  Used By: workflows/src/clients/evm.ts, scripts/*
+  Purpose: Local deployment and demo execution outside CRE runtime
 
 ----------------------------------------------------------------
 3) Blockchain / RPC Connections
@@ -47,10 +67,11 @@ Last Updated Phase: Step 2 implementation
 ----------------------------------------------------------------
 4) Onchain Event Trigger Connections
 ----------------------------------------------------------------
-- Name: requestUpdate Event Subscription
-  Origin Contract: StrategyController (planned interface path)
-  Trigger Type: CRE EVM log trigger
-  Used By: workflows/src/handlers/reactiveLog.ts
+- Name: UpdateRequested Event Subscription
+  Origin Contract: StrategyController
+  Event Signature: UpdateRequested(bytes32 indexed protocolId, address indexed requester, string reason)
+  Trigger Type: CRE EVMClient.logTrigger
+  Used By: cre-workflow/main.ts, cre-workflow/logCallback.ts
   Purpose: Reactive execution path initiated by onchain signal
 
 ----------------------------------------------------------------

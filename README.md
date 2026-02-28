@@ -13,13 +13,11 @@ CRE-driven DeFi KPI oracle that ingests public SaaS KPIs and automatically toggl
 
 ## Current Implementation Status
 
-Step 2 baseline is implemented:
-
 - Foundry build flow + TypeScript deployment flow for `KpiOracle`, `PolicyManager`, `StrategyController`
-- TypeScript workflow callbacks for proactive cron and reactive log paths
-- DefiLlama KPI fetch + normalization
-- Onchain publish and conditional policy application from workflow logic
-- Demo scripts for deployment, policy seeding, update request, and end-to-end scenario output
+- CRE SDK-native workflow package (`cre-workflow/`) with real trigger/callback/capability wiring
+- TypeScript demo scripts for local deployment and end-to-end scenario execution
+- DefiLlama KPI fetch via CRE HTTPClient + normalization
+- Onchain publish and conditional policy application via CRE report + writeReport
 - Foundry unit tests (35 Solidity tests) and TypeScript logic tests (15 tests)
 
 ## Architecture at a Glance
@@ -44,22 +42,31 @@ Core contracts:
 
 ## Quickstart
 
-1. Install dependencies:
-   - `npm install`
-2. Prepare env:
-   - Copy `.env.example` to `.env`
-   - Fill at minimum: `TENDERLY_VTN_RPC_URL`, `PRIVATE_KEY`
-3. Compile:
-   - `npm run build`
-4. Deploy contracts:
-   - `npm run deploy:vtn`
-5. Seed policy and requester:
-   - `npm run seed:policy`
-6. Run workflow simulations:
-   - `npm run simulate:cron`
-   - `npm run simulate:reactive`
-7. Run deterministic demo:
-   - `npm run demo`
+### Prerequisites
+
+- Node.js >= 20
+- Bun >= 1.3 (for CRE workflow package)
+- Foundry (forge)
+- CRE CLI (`cre`)
+
+### Setup
+
+1. Install root dependencies: `npm install`
+2. Install CRE workflow dependencies: `cd cre-workflow && bun install && cd ..`
+3. Copy `.env.example` to `.env` and fill `TENDERLY_VTN_RPC_URL`, `PRIVATE_KEY`
+4. Compile contracts: `npm run build`
+
+### Deploy and Demo (TypeScript scripts)
+
+5. Deploy contracts: `npm run deploy:vtn`
+6. Seed policy and requester: `npm run seed:policy`
+7. Run demo: `npm run demo`
+
+### CRE Simulation (requires CRE account)
+
+8. Log in: `cre login`
+9. Update `cre-workflow/config.staging.json` with deployed contract addresses
+10. Simulate: `cre workflow simulate cre-workflow`
 
 ## Commands
 
@@ -83,8 +90,10 @@ Core contracts:
 - `docs/JUDGING_MAP.md` - submission requirement-to-artifact map
 - `docs/ConnectionGuide.txt` - ports, endpoints, and integration inventory
 - `contracts/` - Solidity contracts for KPI state, policy config, strategy mode
-- `workflows/` - TypeScript workflow package and handlers
+- `cre-workflow/` - CRE SDK-native workflow (bun, `@chainlink/cre-sdk`, triggers + capabilities)
+- `workflows/` - TypeScript workflow logic (ethers-based local execution path)
 - `scripts/` - deployment and demo execution scripts
+- `project.yaml` - CRE CLI project config (RPC targets)
 - `test/contracts/` - Foundry unit and integration tests
 - `test/workflows/` - TypeScript logic tests (evaluatePolicy, normalizeKpi)
 - `.github/workflows/ci.yml` - build, type-check, and test in CI
