@@ -98,13 +98,26 @@ Core contracts:
 - `test/workflows/` - TypeScript logic tests (evaluatePolicy, normalizeKpi)
 - `.github/workflows/ci.yml` - build, type-check, and test in CI
 
-## Submission Evidence Plan
+## Deployed Contracts (Tenderly Sepolia Virtual TestNet)
 
-The final submission package will include:
+| Contract | Address |
+|---|---|
+| KpiOracle | `0xD70943E223Ce5138849f282e661b1499A5b1Ff88` |
+| PolicyManager | `0x6Ac7f46593d3b184dc09eDa7F87F18bA01083d22` |
+| StrategyController | `0xf719e37c838236EF84d2D9A55FE08bd811E732D3` |
+
+**Tenderly Explorer:** [View transactions](https://dashboard.tenderly.co/explorer/vnet/648321a4-4a78-4ff7-a072-d6a8c7aa639c/transactions)
+
+## CRE Workflow Evidence
+
+CRE simulation runs successfully via `cre workflow simulate cre-workflow`:
+- Cron trigger fires -> HTTPClient fetches live TVL from DefiLlama -> EVMClient reads prior snapshot -> runtime.report() + writeReport publishes new snapshot -> evaluatePolicy checks thresholds -> conditional applyPolicy write
+
+## Submission Evidence
 
 - Public GitHub repository with workflows/contracts/scripts/docs
-- Clear CRE workflow execution demonstration
-- Tenderly Virtual TestNet Explorer link with deployment + transaction history
-- 3-5 minute demo video
+- CRE SDK-native workflow with successful simulation evidence
+- Tenderly Virtual TestNet Explorer link with deployed contracts + tx history
+- 3-5 minute demo video (to be added)
 
-See `docs/JUDGING_MAP.md` for artifact mapping.
+See `docs/JUDGING_MAP.md` for requirement-to-artifact mapping.

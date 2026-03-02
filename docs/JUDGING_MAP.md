@@ -19,13 +19,13 @@ This file maps known submission requirements to concrete repository evidence.
 | Docs on use case + architecture + CRE + VTN value | `README.md`, `docs/PRD.md`, `docs/ARCHITECTURE.md` |
 | Clear CRE execution integrated with VTN | `docs/DEMO_RUNBOOK.md`, `cre-workflow/`, `scripts/deploy-contracts.ts`, `scripts/demo-scenario.ts` |
 | Repo with workflows/contracts/scripts/docs | `cre-workflow/`, `workflows/`, `contracts/`, `scripts/`, `docs/` |
-| Tenderly Explorer link with deployed contracts + tx history | To be added in submission checklist |
+| Tenderly Explorer link with deployed contracts + tx history | [Explorer](https://dashboard.tenderly.co/explorer/vnet/648321a4-4a78-4ff7-a072-d6a8c7aa639c/transactions) |
 
 ## Submission Checklist (fill before final submission)
 
-- [ ] Public repo is accessible.
-- [ ] Explorer link is populated in README.
+- [x] Explorer link is populated in README.
+- [x] All required scripts execute successfully (`npm run demo` verified).
+- [x] CRE simulation evidence captured (`cre workflow simulate cre-workflow` passes).
+- [x] Connection inventory is up to date in `docs/ConnectionGuide.txt`.
+- [ ] Public repo is accessible (push to GitHub).
 - [ ] Demo video link is added to README.
-- [ ] All required scripts execute successfully.
-- [ ] CRE simulation evidence captured (screenshot or log).
-- [ ] Connection inventory is up to date in `docs/ConnectionGuide.txt`.

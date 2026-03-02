@@ -1,14 +1,14 @@
 {
   "schedule": "0 */10 * * * *",
-  "defiLlamaUrl": "https://api.llama.fi/protocol/aave",
+  "defiLlamaUrl": "https://api.llama.fi/tvl/aave",
   "protocolIdHex": "0x4141564500000000000000000000000000000000000000000000000000000000",
   "minTvlUsd": 1,
   "minChange1dBps": -500,
   "minChange7dBps": -1200,
   "evms": [
     {
-      "kpiOracleAddress": "YOUR_KPI_ORACLE_ADDRESS",
-      "strategyControllerAddress": "YOUR_STRATEGY_CONTROLLER_ADDRESS",
+      "kpiOracleAddress": "0xD70943E223Ce5138849f282e661b1499A5b1Ff88",
+      "strategyControllerAddress": "0xf719e37c838236EF84d2D9A55FE08bd811E732D3",
       "chainSelectorName": "ethereum-testnet-sepolia",
       "gasLimit": "500000"
     }

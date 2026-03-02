@@ -21,10 +21,8 @@ import {
 } from "viem";
 import type { Config } from "./main";
 
-interface DefiLlamaResponse {
-  tvl: number;
-  change_1d: number;
-  change_7d: number;
+interface TvlResponse {
+  currentTvl: number;
 }
 
 interface NormalizedKpi {
@@ -87,10 +85,10 @@ const APPLY_POLICY_REPORT_PARAMS = parseAbiParameters(
   "bytes32 protocolId, uint8 nextMode, bytes32 reasonCode"
 );
 
-function fetchDefiLlamaKpi(
+function fetchCurrentTvl(
   sendRequester: HTTPSendRequester,
   config: Config
-): NormalizedKpi {
+): TvlResponse {
   const response = sendRequester
     .sendRequest({ method: "GET", url: config.defiLlamaUrl })
     .result();
@@ -99,23 +97,14 @@ function fetchDefiLlamaKpi(
     throw new Error(`DefiLlama request failed: ${response.statusCode}`);
   }
 
-  const raw: DefiLlamaResponse = JSON.parse(
-    Buffer.from(response.body).toString("utf-8")
-  );
+  const text = Buffer.from(response.body).toString("utf-8").trim();
+  const currentTvl = Number(text);
 
-  if (
-    typeof raw.tvl !== "number" ||
-    typeof raw.change_1d !== "number" ||
-    typeof raw.change_7d !== "number"
-  ) {
-    throw new Error("Invalid DefiLlama payload schema");
+  if (isNaN(currentTvl)) {
+    throw new Error(`Invalid TVL response: ${text.slice(0, 50)}`);
   }
 
-  return {
-    tvlUsd: Math.max(0, Math.round(raw.tvl)),
-    change1dBps: Math.round(raw.change_1d * 100),
-    change7dBps: Math.round(raw.change_7d * 100),
-  };
+  return { currentTvl };
 }
 
 function evaluatePolicy(
@@ -153,24 +142,21 @@ export function executeKpiCycle(
   runtime.log(`[KPI Cycle] Trigger: ${triggerName}`);
   runtime.log(`[KPI Cycle] Protocol: ${protocolId}`);
 
-  // --- Step 1: Fetch KPI data via HTTP capability ---
-  runtime.log("[Step 1] Fetching KPI data from DefiLlama...");
+  // --- Step 1: Fetch current TVL via HTTP capability ---
+  runtime.log("[Step 1] Fetching current TVL from DefiLlama...");
   const httpClient = new cre.capabilities.HTTPClient();
-  const kpi = httpClient
+  const tvlData = httpClient
     .sendRequest(
       runtime,
-      fetchDefiLlamaKpi,
+      fetchCurrentTvl,
       ConsensusAggregationByFields({
-        tvlUsd: median,
-        change1dBps: median,
-        change7dBps: median,
+        currentTvl: median,
       })
     )(config)
     .result();
 
-  runtime.log(
-    `[Step 1] KPI: tvl=${kpi.tvlUsd}, 1d=${kpi.change1dBps}bps, 7d=${kpi.change7dBps}bps`
-  );
+  const currentTvl = Math.max(0, Math.round(tvlData.currentTvl));
+  runtime.log(`[Step 1] Current TVL: ${currentTvl}`);
 
   // --- Step 2: Read prior snapshot (EVM Read) ---
   runtime.log("[Step 2] Reading prior snapshot from KpiOracle...");
@@ -211,9 +197,21 @@ export function executeKpiCycle(
     data: bytesToHex(readResult.data),
   });
 
-  runtime.log(
-    `[Step 2] Prior snapshot timestamp: ${(priorSnapshot as any)[3]?.toString() || "none"}`
-  );
+  const priorTvl = Number((priorSnapshot as any)[0] || 0n);
+  const priorTimestamp = Number((priorSnapshot as any)[3] || 0n);
+  runtime.log(`[Step 2] Prior TVL: ${priorTvl}, timestamp: ${priorTimestamp || "none"}`);
+
+  // --- Compute change from prior snapshot ---
+  let change1dBps = 0;
+  let change7dBps = 0;
+  if (priorTvl > 0) {
+    const changePct = ((currentTvl - priorTvl) / priorTvl) * 100;
+    change1dBps = Math.round(changePct * 100);
+    change7dBps = change1dBps;
+  }
+
+  const kpi: NormalizedKpi = { tvlUsd: currentTvl, change1dBps, change7dBps };
+  runtime.log(`[Step 2] Computed KPI: tvl=${kpi.tvlUsd}, 1d=${kpi.change1dBps}bps, 7d=${kpi.change7dBps}bps`);
 
   // --- Step 3: Publish new KPI snapshot (EVM Write via CRE report) ---
   runtime.log("[Step 3] Publishing new KPI snapshot...");

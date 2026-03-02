@@ -1,4 +1,4 @@
-import {fetchProtocolKpi, normalizeKpi} from "./clients/http.js";
+import {fetchProtocolKpi} from "./clients/http.js";
 import {applyPolicy, publishSnapshot, readPriorSnapshot} from "./clients/evm.js";
 import {defaultConfig} from "./config.js";
 import {evaluatePolicy} from "./logic/evaluatePolicy.js";
@@ -30,8 +30,7 @@ export async function executeKpiCycle(options: ExecuteOptions): Promise<KpiCycle
   const protocolId = options.protocolIdOverride || defaultConfig.protocolId;
   const runId = buildRunId(options.runIdPrefix || options.trigger);
 
-  const raw = await fetchProtocolKpi(defaultConfig.defiLlamaProtocolSlug);
-  const kpi = normalizeKpi(raw);
+  const kpi = await fetchProtocolKpi(defaultConfig.defiLlamaProtocolSlug);
 
   await readPriorSnapshot(protocolId);
 
