@@ -92,6 +92,6 @@ Last Updated Phase: Step 3A CRE SDK wiring
 ----------------------------------------------------------------
 6) Submission Evidence Links (To Populate)
 ----------------------------------------------------------------
-- Tenderly Explorer Link: TODO in final submission pass
-- Demo Video Link: TODO in final submission pass
-- Public Repo Link: TODO in final submission pass
+- Tenderly Explorer Link: https://dashboard.tenderly.co/explorer/vnet/648321a4-4a78-4ff7-a072-d6a8c7aa639c/transactions
+- Demo Video Link: (https://youtu.be/2Axb74ZUmcE?si=UeIgO_-cpXRf77Do)
+- Public Repo Link: (https://github.com/PenneconDavid/defi-kpi-publisher)

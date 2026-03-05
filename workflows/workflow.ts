@@ -3,9 +3,8 @@ import {handleProactiveCron} from "./src/handlers/proactiveCron.js";
 import {handleReactiveLog} from "./src/handlers/reactiveLog.js";
 
 /**
- * CRE-oriented workflow manifest.
- * Step 2 wires executable callback handlers and keeps trigger metadata
- * aligned with CRE trigger-and-callback architecture.
+ * Workflow manifest for the ethers-based local execution path.
+ * The CRE SDK-native workflow lives in cre-workflow/main.ts.
  */
 export const workflowManifest = {
   handlers: [

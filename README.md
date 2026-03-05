@@ -118,6 +118,6 @@ CRE simulation runs successfully via `cre workflow simulate cre-workflow`:
 - Public GitHub repository with workflows/contracts/scripts/docs
 - CRE SDK-native workflow with successful simulation evidence
 - Tenderly Virtual TestNet Explorer link with deployed contracts + tx history
-- 3-5 minute demo video (to be added)
+- 3-5 minute demo video (https://youtu.be/2Axb74ZUmcE?si=UeIgO_-cpXRf77Do)
 
 See `docs/JUDGING_MAP.md` for requirement-to-artifact mapping.
